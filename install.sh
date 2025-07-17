@@ -1,73 +1,45 @@
-#!/bin/bash
+#!/data/data/com.termux/files/usr/bin/bash
 
-# Renk kodları
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-CYAN='\033[0;36m'
-NC='\033[0m' # No Color
+# Renk kodları (açık mavi)
+BLUE='\033[96m'
+RESET='\033[0m'
 
-# Root kontrolü
-if [ "$(id -u)" -eq 0 ]; then
-    echo -e "${RED}Hata: Bu script root olarak çalıştırılmamalıdır.${NC}"
-    exit 1
+# Logo
+echo -e "${BLUE}╔════════════════════════════════════╗"
+echo -e "║                                    ║"
+echo -e "║        ᴀᴅᴇᴍ1545          ║"
+echo -e "║                                    ║"
+echo -e "╚════════════════════════════════════╝${RESET}"
+
+# Repo URL ve dosya ayarları
+REPO_URL="https://github.com/adem15451545/adem1545.git"
+DIR_NAME="adem1545"
+SCRIPT_NAME="ᴀᴅᴇᴍ1545.py"
+
+# Git yüklü değilse yükle
+if ! command -v git &> /dev/null
+then
+    echo -e "${BLUE}Git yüklü değil, yükleniyor...${RESET}"
+    pkg update -y
+    pkg install git -y
 fi
 
-clear
-
-# Başlık ve bilgi
-echo -e "${CYAN}"
-echo "╔════════════════════════════════════╗"
-echo "║                                    ║"
-echo "║        ᴀᴅᴇᴍ1545          ║"
-echo "║                                    ║"
-echo "╚════════════════════════════════════╝"
-echo -e "${NC}"
-echo -e "${YELLOW}▶ YouTube: youtube.com/@stickwar1545${NC}"
-echo -e "${YELLOW}▶ GitHub: github.com/adem15451545${NC}"
-sleep 2
-
-# Paket kurulumu
-echo -e "${CYAN}[1/4] Gereken paketler kuruluyor...${NC}"
-pkg update -y > /dev/null 2>&1
-pkg install -y git python figlet wget > /dev/null 2>&1
-
-# Proje indirme
-echo -e "${CYAN}[2/4] Proje indiriliyor...${NC}"
-if [ -d "adem1545" ]; then
-    rm -rf adem1545
+# Eğer klasör varsa temizle
+if [ -d "$DIR_NAME" ]; then
+    echo -e "${BLUE}$DIR_NAME klasörü zaten var, siliniyor...${RESET}"
+    rm -rf "$DIR_NAME"
 fi
 
-git clone https://github.com/adem15451545/adem1545.git > /dev/null 2>&1
+# Repo klonla
+echo -e "${BLUE}Repo indiriliyor...${RESET}"
+git clone "$REPO_URL"
 
-if [ ! -d "adem1545" ]; then
-    echo -e "${RED}Hata: Proje indirilemedi! İnternet bağlantınızı kontrol edin.${NC}"
-    exit 1
-fi
+# Klasöre gir
+cd "$DIR_NAME" || exit
 
-# Gerekli kütüphaneler
-echo -e "${CYAN}[3/4] Python kütüphaneleri kontrol ediliyor...${NC}"
-cd adem1545
-if [ -f "requirements.txt" ]; then
-    pip install -r requirements.txt > /dev/null 2>&1
-fi
+# Çalıştırma izni ver
+chmod +x "$SCRIPT_NAME"
 
-# Çalıştırma
-echo -e "${CYAN}[4/4] Program başlatılıyor...${NC}"
-sleep 2
-clear
-
-if [ -f "adem1545.py" ]; then
-    # Logo gösterimi
-    echo -e "${CYAN}"
-    figlet "ADEM1545"
-    echo -e "${NC}"
-    echo -e "${GREEN}Başarıyla kuruldu ve başlatıldı!${NC}"
-    echo ""
-    
-    # Programı çalıştır
-    python adem1545.py
-else
-    echo -e "${RED}Hata: adem1545.py dosyası bulunamadı!${NC}"
-    echo -e "${YELLOW}Lütfen GitHub deposunu kontrol edin: https://github.com/adem15451545/adem1545${NC}"
-fi
+# Scripti çalıştır
+echo -e "${BLUE}Script çalıştırılıyor...${RESET}"
+python3 "$SCRIPT_NAME"
