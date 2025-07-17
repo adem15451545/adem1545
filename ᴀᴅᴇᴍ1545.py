@@ -1,33 +1,58 @@
-#!/usr/bin/env python3
+#!/data/data/com.termux/files/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import requests
 import re
-import whois
 import socket
 import ssl
 from datetime import datetime
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, urljoin
-from colorama import init, Fore, Style, Back
 from collections import Counter
 import random
-import pyfiglet
 import time
 import sys
 
-# Renkli çıktı için ayarlar
-init(autoreset=True)
+# Termux için ANSI renk kodları
+class Colors:
+    RED = '\033[91m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    BLUE = '\033[94m'
+    MAGENTA = '\033[95m'
+    CYAN = '\033[96m'
+    WHITE = '\033[97m'
+    RESET = '\033[0m'
+    BOLD = '\033[1m'
+    BG_BLACK = '\033[40m'
 
-# Özel logo oluşturma
 def create_logo():
-    logo_text = pyfiglet.figlet_format("adem1545", font="slant")
-    colors = [Fore.RED, Fore.GREEN, Fore.YELLOW, Fore.BLUE, Fore.MAGENTA, Fore.CYAN]
-    colored_logo = ""
-    for line in logo_text.split('\n'):
-        colored_logo += random.choice(colors) + line + "\n"
-    return colored_logo
-
+    # Ana logo (retro renklerde)
+    colors = [Colors.RED, Colors.CYAN, Colors.GREEN, Colors.PURPLE]
+    logo = r"""
+    █▀▀▀▀▀▀▀▀█ █▀▀▀▀▀▀▀█ █▀▀▀▀▀▀▀▀█ ▀▀█▀▀ █▀▀▀▀▀▀▀█
+    █ █▀▀▀▀▀ █ █      █ █ █▀▀▀▀▀ █   █   █      █
+    █ █   █  █ █▀▀▀▀▀▀▀█ █ █   █  █   █   █▀▀▀▀▀▀▀█
+    █ █   █  █ █      █ █ █   █  █   █   █      █
+    █ █   █  █ █      █ █ █   █  █   █   █      █
+    █ █   █  █ █      █ █ █   █  █   █   █      █
+    
+    ░█░█░█▀▀░█▀█░█▀▀░█▀▀░█▀▀░█▀▀
+    ░█░█░█▀▀░█░█░█▀▀░█▀▀░█▀▀░█▀▀
+    ░▀▀▀░▀▀▀░▀░▀░▀▀▀░▀░░░▀▀▀░▀▀▀
+    """
+    
+    # ʙʏ ᴀᴅᴇᴍ1545 yazısı (açık mavi ve yazı stili)
+    signature = Colors.LIGHT_BLUE + r"""
+echo "╔════════════════════════════════════╗"
+echo "║                                    ║"
+echo "║        ᴀᴅᴇᴍ1545          ║"
+echo "║                                    ║"
+echo "╚════════════════════════════════════╝"
+    """ + Colors.RESET
+    
+    return random.choice(colors) + logo + signature
+    
 # Dil desteği
 LANGUAGES = {
     'tr': {
@@ -43,7 +68,7 @@ LANGUAGES = {
         'ip_address': "  🌐 IP Adresi:",
         'server_location': "  📍 Sunucu Konumu:",
         'ssl_info': "\n🔒 SSL BİLGİLERİ",
-        'issuer': "  🏢 Sertifika Sağlayıcı:",
+        'issuer': "  � Sertifika Sağlayıcı:",
         'valid_from': "  📅 Başlangıç Tarihi:",
         'valid_to': "  📅 Bitiş Tarihi:",
         'days_left': "  ⏳ Kalan Gün:",
@@ -71,10 +96,10 @@ LANGUAGES = {
         'update_info': "\n🔄 GÜNCELLEME BİLGİLERİ",
         'admin_stats': "\n👨‍💻 ADMIN BİLGİLERİ",
         'hack_stats': "\n💀 HACK İSTATİSTİKLERİ",
-        'not_found': f"{Fore.RED}❌ Bulunamadı{Fore.RESET}",
-        'low_risk': f"{Fore.GREEN}✅ Düşük Risk{Fore.RESET}",
-        'medium_risk': f"{Fore.YELLOW}⚠️ Orta Risk{Fore.RESET}",
-        'high_risk': f"{Fore.RED}❌ Yüksek Risk{Fore.RESET}",
+        'not_found': "❌ Bulunamadı",
+        'low_risk': "✅ Düşük Risk",
+        'medium_risk': "⚠️ Orta Risk",
+        'high_risk': "❌ Yüksek Risk",
         'exit': "👋 Çıkılıyor...",
     },
     'en': {
@@ -90,7 +115,7 @@ LANGUAGES = {
         'ip_address': "  🌐 IP Address:",
         'server_location': "  📍 Server Location:",
         'ssl_info': "\n🔒 SSL INFORMATION",
-        'issuer': "  🏢 Certificate Issuer:",
+        'issuer': "  � Certificate Issuer:",
         'valid_from': "  📅 Valid From:",
         'valid_to': "  📅 Valid To:",
         'days_left': "  ⏳ Days Left:",
@@ -118,31 +143,33 @@ LANGUAGES = {
         'update_info': "\n🔄 UPDATE INFORMATION",
         'admin_stats': "\n👨‍💻 ADMIN INFORMATION",
         'hack_stats': "\n💀 HACK STATISTICS",
-        'not_found': f"{Fore.RED}❌ Not found{Fore.RESET}",
-        'low_risk': f"{Fore.GREEN}✅ Low Risk{Fore.RESET}",
-        'medium_risk': f"{Fore.YELLOW}⚠️ Medium Risk{Fore.RESET}",
-        'high_risk': f"{Fore.RED}❌ High Risk{Fore.RESET}",
+        'not_found': "❌ Not found",
+        'low_risk': "✅ Low Risk",
+        'medium_risk': "⚠️ Medium Risk",
+        'high_risk': "❌ High Risk",
         'exit': "👋 Exiting...",
     }
 }
 
 def select_language():
     while True:
-        choice = input(Fore.YELLOW + LANGUAGES['tr']['select_lang'])
+        choice = input(Colors.YELLOW + LANGUAGES['tr']['select_lang'])
         if choice == '1':
             return 'tr'
         elif choice == '2':
             return 'en'
-        print(Fore.RED + "Geçersiz seçim! / Invalid choice!")
+        print(Colors.RED + "Geçersiz seçim! / Invalid choice!")
 
 def get_ip_info(ip, lang):
     try:
         response = requests.get(f"http://ip-api.com/json/{ip}", timeout=5)
         data = response.json()
-        location = f"{data.get('city', '')}, {data.get('regionName', '')}, {data.get('country', '')}"
-        isp = data.get('isp', '')
-        return location, isp
-    except Exception as e:
+        if data['status'] == 'success':
+            location = f"{data.get('city', '')}, {data.get('regionName', '')}, {data.get('country', '')}"
+            isp = data.get('isp', '')
+            return location, isp
+        return LANGUAGES[lang]['not_found'], LANGUAGES[lang]['not_found']
+    except:
         return LANGUAGES[lang]['not_found'], LANGUAGES[lang]['not_found']
 
 def get_ssl_info(domain):
@@ -183,6 +210,14 @@ def detect_technologies(response):
         tech['cms'] = 'WordPress'
     elif 'joomla' in response.text.lower():
         tech['cms'] = 'Joomla'
+
+    # Programlama dili tespiti
+    if '<?php' in response.text.lower():
+        tech['programming_lang'] = 'PHP'
+    elif '<%' in response.text.lower() and '%>' in response.text.lower():
+        tech['programming_lang'] = 'ASP'
+    elif 'django' in response.text.lower():
+        tech['programming_lang'] = 'Python/Django'
 
     # Bot tespiti
     if 'googlebot' in response.text.lower():
@@ -340,79 +375,71 @@ def generate_description(soup, domain, lang):
 def print_results(data, lang):
     L = LANGUAGES[lang]
 
-    print("\n" + "="*80)
-    print(Fore.MAGENTA + Style.BRIGHT + L['title'].center(80))
-    print("="*80 + "\n")
+    print("\n" + "="*60)
+    print(Colors.MAGENTA + Colors.BOLD + L['title'].center(60))
+    print("="*60 + "\n")
 
     # Temel Bilgiler
-    print(Fore.CYAN + Style.BRIGHT + L['general_info'] + Style.RESET_ALL)
-    print(Fore.YELLOW + L['site_title'], Fore.WHITE + data.get('title', L['not_found']))
-    print(Fore.YELLOW + L['meta_desc'], Fore.WHITE + data.get('meta_description', L['not_found']))
-    print(Fore.YELLOW + L['ip_address'], Fore.WHITE + data.get('ip', L['not_found']))
+    print(Colors.CYAN + Colors.BOLD + L['general_info'] + Colors.RESET)
+    print(Colors.YELLOW + L['site_title'], Colors.WHITE + data.get('title', L['not_found']))
+    print(Colors.YELLOW + L['meta_desc'], Colors.WHITE + data.get('meta_description', L['not_found']))
+    print(Colors.YELLOW + L['ip_address'], Colors.WHITE + data.get('ip', L['not_found']))
     if data.get('location'):
-        print(Fore.YELLOW + L['server_location'], Fore.WHITE + data['location'])
+        print(Colors.YELLOW + L['server_location'], Colors.WHITE + data['location'])
 
     # SSL Bilgileri
     if data.get('ssl'):
-        print(Fore.CYAN + Style.BRIGHT + L['ssl_info'] + Style.RESET_ALL)
-        print(Fore.YELLOW + L['issuer'], Fore.WHITE + data['ssl'].get('issuer', L['not_found']))
-        print(Fore.YELLOW + L['valid_from'], Fore.WHITE + data['ssl'].get('valid_from', L['not_found']))
-        print(Fore.YELLOW + L['valid_to'], Fore.WHITE + data['ssl'].get('valid_to', L['not_found']))
-        print(Fore.YELLOW + L['days_left'], Fore.WHITE + str(data['ssl'].get('days_left', 0)))
+        print(Colors.CYAN + Colors.BOLD + L['ssl_info'] + Colors.RESET)
+        print(Colors.YELLOW + L['issuer'], Colors.WHITE + data['ssl'].get('issuer', L['not_found']))
+        print(Colors.YELLOW + L['valid_from'], Colors.WHITE + data['ssl'].get('valid_from', L['not_found']))
+        print(Colors.YELLOW + L['valid_to'], Colors.WHITE + data['ssl'].get('valid_to', L['not_found']))
+        print(Colors.YELLOW + L['days_left'], Colors.WHITE + str(data['ssl'].get('days_left', 0)))
 
     # Teknoloji Bilgileri
-    print(Fore.CYAN + Style.BRIGHT + L['tech_info'] + Style.RESET_ALL)
-    print(Fore.YELLOW + L['server'], Fore.WHITE + data['tech'].get('server', L['not_found']))
-    print(Fore.YELLOW + L['cms'], Fore.WHITE + data['tech'].get('cms', L['not_found']))
-    print(Fore.YELLOW + "  Botlar:", Fore.WHITE + ', '.join(data['tech'].get('bots', [])) or L['not_found'])
+    print(Colors.CYAN + Colors.BOLD + L['tech_info'] + Colors.RESET)
+    print(Colors.YELLOW + L['server'], Colors.WHITE + data['tech'].get('server', L['not_found']))
+    print(Colors.YELLOW + L['cms'], Colors.WHITE + data['tech'].get('cms', L['not_found']))
+    print(Colors.YELLOW + L['programming_lang'], Colors.WHITE + data['tech'].get('programming_lang', L['not_found']))
+    print(Colors.YELLOW + "  Botlar:", Colors.WHITE + ', '.join(data['tech'].get('bots', [])) or L['not_found'])
 
     # Güvenlik Analizi
-    print(Fore.CYAN + Style.BRIGHT + L['security_info'] + Style.RESET_ALL)
-    print(Fore.YELLOW + L['risk_level'], end=" ")
+    print(Colors.CYAN + Colors.BOLD + L['security_info'] + Colors.RESET)
+    print(Colors.YELLOW + L['risk_level'], end=" ")
     risk = data['security'].get('level', 'low')
     if risk == 'high':
-        print(Fore.RED + L['high_risk'])
+        print(Colors.RED + L['high_risk'])
     elif risk == 'medium':
-        print(Fore.YELLOW + L['medium_risk'])
+        print(Colors.YELLOW + L['medium_risk'])
     else:
-        print(Fore.GREEN + L['low_risk'])
+        print(Colors.GREEN + L['low_risk'])
 
-    print(Fore.YELLOW + L['security_percentage'], Fore.WHITE + f"%{data['security'].get('security_score', 0)}")
+    print(Colors.YELLOW + L['security_percentage'], Colors.WHITE + f"%{data['security'].get('security_score', 0)}")
 
-    print(Fore.YELLOW + L['scam_analysis'], end=" ")
+    print(Colors.YELLOW + L['scam_analysis'], end=" ")
     scam_risk = data['scam'].get('risk', 'low')
     if scam_risk == 'high':
-        print(Fore.RED + L['high_risk'])
+        print(Colors.RED + L['high_risk'])
     elif scam_risk == 'medium':
-        print(Fore.YELLOW + L['medium_risk'])
+        print(Colors.YELLOW + L['medium_risk'])
     else:
-        print(Fore.GREEN + L['low_risk'])
+        print(Colors.GREEN + L['low_risk'])
 
-    print(Fore.YELLOW + "  Tespit Edilenler:", Fore.WHITE + ', '.join(data['scam'].get('detected_types', [])) or L['not_found'])
+    print(Colors.YELLOW + "  Tespit Edilenler:", Colors.WHITE + ', '.join(data['scam'].get('detected_types', [])) or L['not_found'])
 
     # İçerik Analizi
-    print(Fore.CYAN + Style.BRIGHT + L['content_info'] + Style.RESET_ALL)
-    print(Fore.YELLOW + L['site_purpose'], Fore.WHITE + ', '.join(data['content'].get('purpose', [])))
+    print(Colors.CYAN + Colors.BOLD + L['content_info'] + Colors.RESET)
+    print(Colors.YELLOW + L['site_purpose'], Colors.WHITE + ', '.join(data['content'].get('purpose', [])))
 
     # Sosyal Medya Hesapları
-    print(Fore.CYAN + Style.BRIGHT + L['social_media'] + Style.RESET_ALL)
+    print(Colors.CYAN + Colors.BOLD + L['social_media'] + Colors.RESET)
     for name, url in data['content'].get('social_accounts', {}).items():
-        print(Fore.WHITE + f"  - {name}: {url}")
+        print(Colors.WHITE + f"  - {name}: {url}")
     if not data['content'].get('social_accounts'):
-        print(Fore.WHITE + "  " + L['not_found'])
+        print(Colors.WHITE + "  " + L['not_found'])
 
-    # Kayıtlı Kullanıcılar
-    print(Fore.CYAN + Style.BRIGHT + L['user_stats'] + Style.RESET_ALL)
-    print(Fore.YELLOW + "  Kayıtlı Kullanıcı Sayısı:", Fore.WHITE + str(len(data['content'].get('registered_users', []))))
-    print(Fore.YELLOW + "  Örnek Kullanıcılar:", Fore.WHITE + ', '.join(data['content'].get('registered_users', [])[:5]) + "...")
-
-    # Site Açıklaması
-    print(Fore.CYAN + Style.BRIGHT + "\n📄 SİTE AÇIKLAMASI" + Style.RESET_ALL)
-    print(Fore.WHITE + data['content'].get('description', 'Açıklama bulunamadı'))
-
-    print("\n" + "="*80)
-    print(Fore.GREEN + "ANALİZ TAMAMLANDI".center(80) if lang == 'tr' else "ANALYSIS COMPLETED".center(80))
-    print("="*80 + "\n")
+    print("\n" + "="*60)
+    print(Colors.GREEN + "ANALİZ TAMAMLANDI".center(60) if lang == 'tr' else "ANALYSIS COMPLETED".center(60))
+    print("="*60 + "\n")
 
 def analyze_website(url, lang):
     try:
@@ -420,7 +447,7 @@ def analyze_website(url, lang):
             url = 'https://' + url
 
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            'User-Agent': 'Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36',
             'Accept-Language': 'tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7'
         }
 
@@ -432,7 +459,7 @@ def analyze_website(url, lang):
             response = requests.get(url, headers=headers, timeout=15)
             response.raise_for_status()
         except requests.exceptions.RequestException as e:
-            print(Fore.RED + LANGUAGES[lang]['connection_error'])
+            print(Colors.RED + LANGUAGES[lang]['connection_error'])
             return None
 
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -482,7 +509,7 @@ def analyze_website(url, lang):
         return result
 
     except Exception as e:
-        print(Fore.RED + f"⛔ {LANGUAGES[lang]['connection_error']}: {str(e)}")
+        print(Colors.RED + f"⛔ {LANGUAGES[lang]['connection_error']}: {str(e)}")
         return None
 
 def main():
@@ -493,32 +520,32 @@ def main():
 
         while True:
             print(create_logo())
-            print(Fore.CYAN + Style.BRIGHT + L['title'].center(80))
-            print(Fore.YELLOW + "v3.0 | Advanced Web Analysis Tool".center(80) + "\n")
+            print(Colors.CYAN + Colors.BOLD + L['title'].center(60))
+            print(Colors.YELLOW + "v3.0 | Termux Uyumlu".center(60) + "\n")
 
             # URL girişi
-            url = input(Fore.GREEN + L['enter_url'])
+            url = input(Colors.GREEN + L['enter_url'])
             if not url:
-                print(Fore.RED + "Geçersiz URL! / Invalid URL!")
+                print(Colors.RED + "Geçersiz URL! / Invalid URL!")
                 continue
 
             # Analiz
             start_time = time.time()
-            print(Fore.BLUE + L['analyzing'])
+            print(Colors.BLUE + L['analyzing'])
 
             result = analyze_website(url, lang)
 
             if result:
                 print_results(result, lang)
             else:
-                print(Fore.RED + L['connection_error'])
+                print(Colors.RED + L['connection_error'])
 
-            print(Fore.YELLOW + f"⏱️ {time.time() - start_time:.2f} saniye" if lang == 'tr' else f"⏱️ {time.time() - start_time:.2f} seconds")
+            print(Colors.YELLOW + f"⏱️ {time.time() - start_time:.2f} saniye" if lang == 'tr' else f"⏱️ {time.time() - start_time:.2f} seconds")
 
             # Dil değiştirme seçeneği
-            choice = input(Fore.CYAN + L['change_lang'])
+            choice = input(Colors.CYAN + L['change_lang'])
             if choice == '0':
-                print(Fore.YELLOW + L['exit'])
+                print(Colors.YELLOW + L['exit'])
                 break
             elif choice == '1':
                 lang = 'tr'
@@ -526,9 +553,9 @@ def main():
                 lang = 'en'
 
     except KeyboardInterrupt:
-        print("\n" + Fore.YELLOW + L['exit'])
+        print("\n" + Colors.YELLOW + L['exit'])
     except Exception as e:
-        print(Fore.RED + f"⛔ Kritik hata: {str(e)}")
+        print(Colors.RED + f"⛔ Kritik hata: {str(e)}")
 
 if __name__ == "__main__":
     main()
