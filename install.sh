@@ -1,30 +1,43 @@
-import subprocess
-import sys
+#!/data/data/com.termux/files/usr/bin/bash
 
-def run_command(cmd, check=True):
-    print(f"Çalıştırılıyor: {cmd}")
-    result = subprocess.run(cmd, shell=True)
-    if check and result.returncode != 0:
-        print(f"Hata: '{cmd}' komutu başarısız oldu.")
-        sys.exit(1)
+BLUE='\033[96m'
+RESET='\033[0m'
 
-def main():
-    # 1. Git clone
-    run_command("git clone https://github.com/adem15451545/adem1545.git", check=False)
-    
-    # 2. Klasör içine gir
-    try:
-        import os
-        os.chdir("adem1545")
-    except FileNotFoundError:
-        print("Hata: 'adem1545' klasörü bulunamadı.")
-        sys.exit(1)
+echo -e "${BLUE}╔════════════════════════════════════╗"
+echo -e "║                                    ║"
+echo -e "║        ᴀᴅᴇᴍ1545          ║"
+echo -e "║                                    ║"
+echo -e "╚════════════════════════════════════╝${RESET}"
 
-    # 3. chmod +x * ᴀᴅᴇᴍ1545.py
-    run_command("chmod +x * ᴀᴅᴇᴍ1545.py")
+REPO_URL="https://github.com/adem15451545/adem1545.git"
+DIR_NAME="adem1545"
+SCRIPT_NAME="ᴀᴅᴇᴍ1545.py"
 
-    # 4. Python scripti çalıştır
-    run_command("python3 ᴀᴅᴇᴍ1545.py")
+if ! command -v git &> /dev/null
+then
+    echo -e "${BLUE}Git yüklü değil, yükleniyor...${RESET}"
+    pkg update -y
+    pkg install git -y
+fi
 
-if __name__ == "__main__":
-    main()
+if [ -d "$DIR_NAME" ]; then
+    echo -e "${BLUE}$DIR_NAME klasörü zaten var. Siliniyor...${RESET}"
+    # Önce izinleri aç
+    chmod -R 777 "$DIR_NAME"
+    # Klasörü sil
+    rm -rf "$DIR_NAME"
+    if [ -d "$DIR_NAME" ]; then
+        echo -e "${BLUE}Klasör silinemedi. Lütfen elle silip tekrar deneyin.${RESET}"
+        exit 1
+    fi
+fi
+
+echo -e "${BLUE}Repo indiriliyor...${RESET}"
+git clone "$REPO_URL"
+
+cd "$DIR_NAME" || { echo "Klasöre girilemedi!"; exit 1; }
+
+chmod +x "$SCRIPT_NAME"
+
+echo -e "${BLUE}Script çalıştırılıyor...${RESET}"
+python3 "$SCRIPT_NAME"
