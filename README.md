@@ -1,5 +1,5 @@
 
-## 🌐 ᴀᴅᴇᴍ1545 Gelişmiş Web Analiz Aracı (Türkçe Açıklama)
+### 🌐 ᴀᴅᴇᴍ1545 Gelişmiş Web Analiz Aracı (Türkçe Açıklama)
 
 Bu Python scripti, gelişmiş bir web sitesi analiz aracıdır.  
 🔍 Kullanıcının girdiği URL'yi detaylı şekilde inceleyerek, site hakkında çok çeşitli bilgiler toplar ve renkli, anlaşılır bir şekilde konsola yazdırır.
@@ -23,7 +23,7 @@ Kullanım akışı:
 
 Bu araç, web geliştiriciler, güvenlik uzmanları veya genel kullanıcılar için sitelerin teknik ve güvenlik durumunu hızlıca değerlendirmeye yardımcı olur.
 
-## 🌐 ᴀᴅᴇᴍ1545 Advanced Web Analysis Tool (English Explanation)
+### 🌐 ᴀᴅᴇᴍ1545 Advanced Web Analysis Tool (English Explanation)
 
 This Python script is an advanced website analysis tool.  
 🔍 It thoroughly inspects a user-provided URL and gathers a wide range of information about the site, displaying it in a colorful and clear format on the console.
@@ -47,10 +47,9 @@ Workflow:
 
 This tool is ideal for web developers, security analysts, or general users who want to quickly assess the technical and security status of websites.
 
-### git clone https://github.com/adem15451545/adem1545.git
-### cd adem1545
-### chmod +x * ᴀᴅᴇᴍ1545.py
-### python3 ᴀᴅᴇᴍ1545.py
+### curl -O https://raw.githubusercontent.com/adem15451545/adem1545/main/install.sh
+### chmod +x install.sh
+### ./install.sh
 
 iletişim_communication
 

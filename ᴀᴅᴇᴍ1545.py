@@ -19,16 +19,17 @@ class Colors:
     GREEN = '\033[92m'
     YELLOW = '\033[93m'
     BLUE = '\033[94m'
-    MAGENTA = '\033[95m'
+    MAGENTA = '\033[95m'  # PURPLE yerine MAGENTA kullanıyoruz
     CYAN = '\033[96m'
     WHITE = '\033[97m'
     RESET = '\033[0m'
     BOLD = '\033[1m'
     BG_BLACK = '\033[40m'
+    LIGHT_BLUE = '\033[94m'  # LIGHT_BLUE eklendi
 
 def create_logo():
     # Ana logo (retro renklerde)
-    colors = [Colors.RED, Colors.CYAN, Colors.GREEN, Colors.PURPLE]
+    colors = [Colors.RED, Colors.CYAN, Colors.GREEN, Colors.MAGENTA]  # PURPLE yerine MAGENTA
     logo = r"""
     █▀▀▀▀▀▀▀▀█ █▀▀▀▀▀▀▀█ █▀▀▀▀▀▀▀▀█ ▀▀█▀▀ █▀▀▀▀▀▀▀█
     █ █▀▀▀▀▀ █ █      █ █ █▀▀▀▀▀ █   █   █      █
@@ -44,11 +45,11 @@ def create_logo():
     
     # ʙʏ ᴀᴅᴇᴍ1545 yazısı (açık mavi ve yazı stili)
     signature = Colors.LIGHT_BLUE + r"""
-echo "╔════════════════════════════════════╗"
-echo "║                                    ║"
-echo "║        ᴀᴅᴇᴍ1545          ║"
-echo "║                                    ║"
-echo "╚════════════════════════════════════╝"
+╔════════════════════════════════════╗
+║                                    ║
+║        ᴀᴅᴇᴍ1545                   ║
+║                                    ║
+╚════════════════════════════════════╝
     """ + Colors.RESET
     
     return random.choice(colors) + logo + signature
@@ -538,24 +539,23 @@ def main():
             if result:
                 print_results(result, lang)
             else:
-                print(Colors.RED + L['connection_error'])
+                print(Colors.RED + "Analiz başarısız oldu! / Analysis failed!")
 
-            print(Colors.YELLOW + f"⏱️ {time.time() - start_time:.2f} saniye" if lang == 'tr' else f"⏱️ {time.time() - start_time:.2f} seconds")
-
-            # Dil değiştirme seçeneği
-            choice = input(Colors.CYAN + L['change_lang'])
+            # Dil değiştirme veya çıkış
+            choice = input(Colors.YELLOW + L['change_lang'])
             if choice == '0':
-                print(Colors.YELLOW + L['exit'])
+                print(Colors.GREEN + L['exit'])
                 break
             elif choice == '1':
                 lang = 'tr'
             elif choice == '2':
                 lang = 'en'
+            else:
+                continue
 
     except KeyboardInterrupt:
-        print("\n" + Colors.YELLOW + L['exit'])
-    except Exception as e:
-        print(Colors.RED + f"⛔ Kritik hata: {str(e)}")
+        print("\n" + Colors.RED + LANGUAGES.get(lang, LANGUAGES['en'])['exit'])
+        sys.exit(0)
 
 if __name__ == "__main__":
     main()

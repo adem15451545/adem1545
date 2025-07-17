@@ -4,10 +4,20 @@ BLUE='\033[96m'
 RESET='\033[0m'
 
 echo -e "${BLUE}╔════════════════════════════════════╗"
-echo -e "║                                    ║"
-echo -e "║        ᴀᴅᴇᴍ1545          ║"
-echo -e "║                                    ║"
+echo -e "║                                                                                                                  ║"
+echo -e "║        ᴀᴅᴇᴍ1545                                                                                        ║"
+echo -e "║                                                                                                                  ║"
 echo -e "╚════════════════════════════════════╝${RESET}"
+
+# Sosyal medya bağlantıları
+echo -e "${BLUE}📱 Sosyal Medya Hesaplarım:${RESET}"
+echo -e "${BLUE}📌 TikTok:     ${RESET}https://tiktok.com/@ademyalcin444"
+echo -e "${BLUE}📌 Instagram:  ${RESET}https://www.instagram.com/adema1545"
+echo -e "${BLUE}📌 YouTube:    ${RESET}https://youtube.com/@stickwar1545"
+echo -e "${BLUE}📌 GitHub:   ${RESET}https://github.com/adem15451545"
+echo -e "${BLUE}📌 GitHub:   ${RESET}https://github.com/adem15451545/-1545.git"
+echo -e "${BLUE}📌 Web Site:   ${RESET}https://adem1545.godaddysites.com/"
+echo -e "${BLUE}📌 Telegram:   ${RESET}https://t.me/+DmSJcq5izrdiOTY0"
 
 REPO_URL="https://github.com/adem15451545/adem1545.git"
 DIR_NAME="adem1545"
