@@ -47,9 +47,9 @@ Workflow:
 
 This tool is ideal for web developers, security analysts, or general users who want to quickly assess the technical and security status of websites.
 
-git clone https://github.com/adem15451545/-1545.git
-cd adem1545
-python3 adem1545.py
+## git clone https://github.com/adem15451545/adem1545.git
+## cd adem1545
+## python3 adem1545.py
 
 iletişim_communication
 
